@@ -1,0 +1,45 @@
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  JoinColumn,
+  ManyToOne
+} from "typeorm";
+
+import { Lote } from "./Lote.js";
+import { Usuario } from "./Usuario.js";
+import { ResultadoInspecao } from "../types/ResultadoInspecao.js";
+
+@Entity("inspecao_lote")
+export class InspecaoLote {
+
+  @PrimaryGeneratedColumn()
+  id!: number;
+
+  @OneToOne(() => Lote)
+  @JoinColumn({ name: "lote_id" })
+  lote!: Lote;
+
+  @ManyToOne(() => Usuario)
+  @JoinColumn({ name: "inspetor_id" })
+  inspetor!: Usuario;
+
+  @Column({
+    type: "enum",
+    enum: ResultadoInspecao
+  })
+  resultado!: ResultadoInspecao;
+
+  @Column({ type: "int", default: 0 })
+  quantidade_repr!: number;
+
+  @Column({ nullable: true })
+  descricao_desvio?: string;
+
+  @Column({
+    type: "timestamptz",
+    default: () => "CURRENT_TIMESTAMP"
+  })
+  inspecionado_em!: Date;
+}
